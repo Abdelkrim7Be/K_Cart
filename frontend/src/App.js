@@ -19,4 +19,10 @@ const App = () => {
   );
 };
 
+/**<Route> component: It is used to define a route and specify what component 
+ * should be rendered when the URL matches that route's path.
+<Outlet> component: It is used as a placeholder where nested routes can be 
+rendered. Nested routes are routes that are children of another route and are 
+typically used to create nested layouts or hierarchical UI structures. */
+
 export default App;
