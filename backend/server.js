@@ -1,9 +1,11 @@
 // We are using the ES6 notation
 import express from 'express'
+import dotenv from 'dotenv'
+dotenv.config()
 import products from './data/products.js'
 
 // The frontend is working on the port : 300, so the backend is on the port 5000
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // We are runnig our express application
 const app = express();
