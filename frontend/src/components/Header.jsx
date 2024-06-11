@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Badge,
   Navbar,
   Nav,
   Container,
@@ -10,9 +11,12 @@ import {
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 // because we can't just replace Navbar.Brand's href, that why we use LinkContainer
 import { LinkContainer } from "react-router-bootstrap";
+import { useSelector } from "react-redux";
 import logo from "../assets/logo.png";
 
 const Header = () => {
+  const { cartItems } = useSelector((state) => state.cart); //whatever u called it in the store when i did : cart : cartSliceReducer
+
   return (
     <header>
       <Navbar bg="dark" variant="dark" expand="md" collapseOnSelect>
@@ -34,6 +38,11 @@ const Header = () => {
               <LinkContainer to="/cart">
                 <Nav.Link>
                   <FaShoppingCart /> Cart
+                  {cartItems.length > 0 && (
+                    <Badge pill bg="success" style={{ marginLeft: "5px" }}>
+                      {cartItems.reduce((acc, item) => acc + item.qty, 0)}
+                    </Badge>
+                  )}
                 </Nav.Link>
               </LinkContainer>
               {/* Link to the login */}
