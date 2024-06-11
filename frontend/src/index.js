@@ -14,6 +14,7 @@ import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/ProductScreen";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
+import { addItem } from "./Slices/cartSlice";
 import store from "./store";
 
 // Making routers
@@ -35,5 +36,6 @@ root.render(
     </Provider>
   </React.StrictMode>
 );
+
 
 reportWebVitals();
