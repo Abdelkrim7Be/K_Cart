@@ -12,6 +12,7 @@ import "./assets/styles/index.css";
 import App from "./App";
 import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { addItem } from "./Slices/cartSlice";
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<HomeScreen />}></Route>
       {/* The :id part is a URL parameter, and it can match any value. */}
       <Route path="/product/:id" element={<ProductScreen />}></Route>
+      <Route path="/cart" element={<CartScreen />}></Route>
     </Route>
   )
 );
