@@ -12,19 +12,27 @@ import {
 } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import Message from "../components/Message";
-import {addToCart} from '../Slices/cartSlice'
+import { addToCart, removeFromCart } from "../Slices/cartSlice";
 
 const CartScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
-    const { cartItems } = cart;
-    
-    const addToCartHandeler = async (product, qty) => {
-        dispatch(addToCart({ ...product, qty }));
-    }
+  const { cartItems } = cart;
 
+  const addToCartHandeler = async (product, qty) => {
+    dispatch(addToCart({ ...product, qty }));
+  };
+
+  const removeFromCartHandeler = async (id) => {
+    // What does get pass in here , is what is there in the action payload
+    dispatch(removeFromCart(id));
+  };
+
+  const checkoutHandeler = () => {
+    navigate('/login?redirect=/shipping')
+  }
   return (
     <Row>
       <Col md={8}>
@@ -66,7 +74,8 @@ const CartScreen = () => {
                     </Form.Control>
                   </Col>
                   <Col md={2}>
-                    <Button type="Button" variant="white">
+                    {/* Make sure you have a function inside the 'onClick' and then call the handeler that u want */}
+                    <Button type="Button" variant="white" onClick={() => removeFromCartHandeler(item._id)}>
                       <FaTrash></FaTrash>
                     </Button>
                   </Col>
@@ -95,6 +104,7 @@ const CartScreen = () => {
                 type="button"
                 className="btn-block"
                 disabled={!cartItems.length}
+                onClick={ checkoutHandeler }
               >
                 proceed To Checkout
               </Button>
