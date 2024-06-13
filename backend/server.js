@@ -2,6 +2,7 @@
 import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
+import cookieParser from "cookie-parser";
 import { notFound, errorHandeler } from "./middleware/errorMiddleware.js";
 import connectDB from "./config/db.js";
 import productRoutes from "./routes/productRoutes.js";
@@ -20,7 +21,8 @@ const app = express();
 app.use(express.json());
 // an Express.js application is used to parse incoming requests with URL-encoded payloads
 app.use(express.urlencoded({ extended: true }));
-
+// cookie parser : helps us access the cookies in the req 
+app.use(cookieParser());
 // ###################### Routes ##################################
 
 // app.get("/api/products/:id", (req, res) => {
