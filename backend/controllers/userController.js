@@ -13,7 +13,7 @@ const authUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(password))) {
     generateToken(res, user._id);
 
-    res.json({
+    res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -76,7 +76,20 @@ const logoutUser = asyncHandler(async (req, res) => {
 // @route GET /api/users/profile
 // @access Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  res.send("get user profile");
+  // We're logged In
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 // @desc  Update user profile
@@ -84,7 +97,29 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @access Private
 // We are gonna use json web tokens
 const updateUserProfile = asyncHandler(async (req, res) => {
-  res.send("update user profile");
+  // Weire logged In
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.name = req.body.name || user.name; //If it is not set in the request , use the one in the database
+    user.email = req.body.email || user.email; //If it is not set in the request , use the one in the database
+    if (req.body.password) {
+      user.password = req.body.password; //just use the one from the form if it is updated , becuase
+      // because the one in the database is hashed
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 // @desc  Get users
