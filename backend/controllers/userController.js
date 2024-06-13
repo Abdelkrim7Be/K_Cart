@@ -1,6 +1,6 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from "../models/userModel.js";
-import jwt from "jsonwebtoken";
+import generateToken from "../Utilities/generateToken.js";
 
 // @desc  Auth user & get token
 // @route POST /api/users/login
@@ -11,20 +11,7 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
-    // Create the token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      // expiresIn : '1d',//1 day
-      expiresIn: "120d", //1 day
-    });
-
-    // Set JWT as an HTTP Only Cookie
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      // In production , that'll be true
-      secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict", //That will prevent attacks
-      maxAge: 120 * 24 * 60 * 60 * 1000, // 120 days in milliseconds
-    });
+    generateToken(res, user._id);
 
     res.json({
       _id: user._id,
@@ -42,7 +29,35 @@ const authUser = asyncHandler(async (req, res) => {
 // @route POST /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-  res.send("Register user");
+  const { name, email, password } = req.body;
+  //  retrieve a single document that matches the specified criteria.
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
+
+  // we want once the registration is completed, the user is loggedIN and has its jwt httponlycookie
+  const user = await User.create({
+    name, //based on the one's on the body
+    email, //based on the one's on the body
+    password, //based on the one's on the body
+  });
+
+  if (user) {
+    generateToken(res, user._id);
+    // same stuff we returned when they aithenticated
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid User Data");
+  }
 });
 
 // @desc  Logout user / clear cookie
