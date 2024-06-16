@@ -16,6 +16,7 @@ import CartScreen from "./screens/CartScreen";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { addItem } from "./Slices/cartSlice";
+import LoginScreen from "./screens/LoginScreen.jsx";
 import store from "./store";
 
 // Making routers
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       {/* The :id part is a URL parameter, and it can match any value. */}
       <Route path="/product/:id" element={<ProductScreen />}></Route>
       <Route path="/cart" element={<CartScreen />}></Route>
+      <Route path="/login" element={<LoginScreen />}></Route>
     </Route>
   )
 );
