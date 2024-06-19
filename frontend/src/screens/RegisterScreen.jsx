@@ -8,19 +8,21 @@ import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../components/FormContainer";
 import Loader from "../components/Loader";
-import { useLoginMutation } from "../Slices/usersApiSlice";
+import { useRegisterMutation } from "../Slices/usersApiSlice";
 import { setCredentials } from "../Slices/authSlice";
 import { toast } from "react-toastify";
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
   // Creating our component level state
+  const [name, setName] = useState(""); //Set as default an empty string
   const [email, setEmail] = useState(""); //Set as default an empty string
   const [password, setPassword] = useState(""); //Set as default an empty string
+  const [confirmPassword, setConfirmPassword] = useState(""); //Set as default an empty string
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [login, { isLoading }] = useLoginMutation(); //this is by the way a custom hook
+  const [register, { isLoading }] = useRegisterMutation(); //this is by the way a custom hook
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -41,18 +43,32 @@ const LoginScreen = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     // console.log("Submit");
-    try {
-      const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ ...res }));
-      navigate(redirect);
-    } catch (err) {
-      toast.error(err?.data?.message || err.error);
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    } else {
+      try {
+        const res = await register({ name, email, password }).unwrap();
+        dispatch(setCredentials({ ...res }));
+        navigate(redirect);
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
     }
   };
   return (
     <FormContainer>
-      <h1>Sign In</h1>
+      <h1>Sign Up</h1>
       <Form onSubmit={submitHandler}>
+        <Form.Group controlId="nme" className="my-3">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
         <Form.Group controlId="email" className="my-3">
           <Form.Label>Email Address</Form.Label>
           <Form.Control
@@ -71,34 +87,35 @@ const LoginScreen = () => {
             onChange={(e) => setPassword(e.target.value)}
           ></Form.Control>
         </Form.Group>
+        <Form.Group controlId="confirmPassword" className="my-3">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
         <Button
           type="submit"
           variant="primary"
           className="mt-3"
           disabled={isLoading}
         >
-          Sign In
+          Register
         </Button>
         {isLoading && <Loader />}
       </Form>
       <Row className="'py-3">
         <Col>
-          New Customer?{" "}
-          <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>
-            Register
+          Already have an account?{" "}
+          <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
+            Login
           </Link>
-          {/* Why this :  <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>??
-         Imagine a user tries to access a protected page (e.g., /dashboard) but needs to log in first.
-        Your application might redirect them to the login page with a redirect parameter set to the originally
-         requested URL (/dashboard). After successful login, the user clicks the "Register" link (assuming they're 
-         a new user).The conditional link logic ensures that the registration URL includes the redirect parameter 
-         with the value of /dashboard. Upon successful registration, your application can then redirect the user 
-         to the originally intended page (/dashboard) based on the redirect parameter. 
-         This maintains the user's intent after login. */}
         </Col>
       </Row>
     </FormContainer>
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;

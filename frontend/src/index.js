@@ -17,6 +17,7 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { addItem } from "./Slices/cartSlice";
 import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
 import store from "./store";
 
 // Making routers
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path="/product/:id" element={<ProductScreen />}></Route>
       <Route path="/cart" element={<CartScreen />}></Route>
       <Route path="/login" element={<LoginScreen />}></Route>
+      <Route path="/register" element={<RegisterScreen />}></Route>
     </Route>
   )
 );
