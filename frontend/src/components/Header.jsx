@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Badge,
   Navbar,
@@ -12,16 +13,29 @@ import {
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 // because we can't just replace Navbar.Brand's href, that why we use LinkContainer
 import { LinkContainer } from "react-router-bootstrap";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useLogoutMutation } from "../Slices/usersApiSlice";
+import { logout } from "../Slices/authSlice";
 import logo from "../assets/logo.png";
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart); //whatever u called it in the store when i did : cart : cartSliceReducer
   const { userInfo } = useSelector((state) => state.auth);
 
-  const logoutHandler = () => {
-    console.log('Logout')
-  }
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [logoutApiCall] = useLogoutMutation();
+
+  const logoutHandler = async () => {
+    try {
+      await logoutApiCall().unwrap(); //we used unwrap because it returns a promise
+      dispatch(logout());
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <header>
       <Navbar bg="dark" variant="dark" expand="md" collapseOnSelect>

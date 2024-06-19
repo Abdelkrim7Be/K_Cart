@@ -16,7 +16,7 @@ import CartScreen from "./screens/CartScreen";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { addItem } from "./Slices/cartSlice";
-import LoginScreen from "./screens/LoginScreen.jsx";
+import LoginScreen from "./screens/LoginScreen";
 import store from "./store";
 
 // Making routers
